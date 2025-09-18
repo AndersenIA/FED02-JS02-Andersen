@@ -1,0 +1,205 @@
+/****************************************************/
+/****************************************************/
+/************************RESET***********************/
+/****************************************************/
+/****************************************************/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/****************************************************/
+/****************************************************/
+/************************:ROOT***********************/
+/****************************************************/
+/****************************************************/
+
+:root {
+  --text-color: #424242;
+  --border-blue: rgba(44, 135, 255, 0.5);
+  --border-red: rgba(224, 82, 82, 0.5);
+}
+
+/****************************************************/
+/****************************************************/
+/***********************GENERAL**********************/
+/****************************************************/
+/****************************************************/
+
+body {
+  font-family: "Gruppo", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.background-image {
+  z-index: -1;
+  position: fixed;
+}
+
+.form-header {
+  font-size: 4.5rem;
+  font-weight: 100;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.login-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form {
+  position: relative;
+  padding-block: 2rem;
+  padding-inline: 4rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px; /* same rounded corners */
+  background-color: transparent; /* or transparent if you prefer */
+  z-index: 1;
+  border: none; /* remove the solid border */
+}
+
+.login-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 3px; /* border thickness */
+  background: linear-gradient(var(--border-blue), var(--border-red));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1; /* keep it behind the form content */
+}
+
+.input-label {
+  font-size: 3rem;
+  font-weight: 100;
+  color: var(--text-color);
+  width: 30rem;
+}
+
+.input-field {
+  padding-inline: 1rem;
+  font-size: 1.7rem;
+  padding-block: 0.3rem;
+  border: 1px solid var(--text-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  margin-bottom: 3rem;
+  background-color: transparent;
+}
+
+.login-btn {
+  position: relative;
+  font-size: 2.5rem;
+  width: 10rem;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  background-color: transparent; /* transparent inside */
+  color: var(--text-color);
+  cursor: pointer;
+  z-index: 1;
+  border: none; /* remove default border */
+}
+
+.login-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px; /* same as button */
+  padding: 3px; /* thickness of border */
+  background: linear-gradient(
+    var(--border-blue),
+    var(--border-red)
+  ); /* gradient border */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude; /* exclude inner area, so inside is transparent */
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+.login-btn:hover::before {
+  background: none; /* hides the border */
+}
+
+.login-btn:hover {
+  background: linear-gradient(var(--border-blue), var(--border-red));
+  border: none;
+}
