@@ -251,7 +251,7 @@ h2 {
   align-items: center;
   padding-block: 1rem;
   position: fixed;
-  width: 99.2vw;
+  width: 100vw;
   padding-inline: 4.5rem;
   background: linear-gradient(rgba(224, 82, 82, 0.103), rgba(224, 82, 82, 0));
 }
@@ -349,4 +349,202 @@ h2 {
 
 .stories-pic-div {
   border: 2px solid var(--border-red);
+}
+
+/****************************************************/
+/****************************************************/
+/***********************PROFILE**********************/
+/****************************************************/
+/****************************************************/
+
+.profile-section {
+  padding-top: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-info-pic {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  border: 3px solid var(--border-blue);
+  overflow: hidden;
+  margin-right: 1.5rem;
+}
+
+.edit-profile-btn {
+  border: none;
+  background-color: var(--border-blue);
+  border-radius: 10px;
+  padding-inline: 0.3rem;
+  padding-block: 0.3rem;
+  margin-left: 2rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.profile-posts {
+  padding-top: 10rem;
+  padding-bottom: 10rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: calc(3 * 20rem + 2 * 2rem);
+  margin-inline: auto;
+}
+
+.profile-post-img {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.profile-post {
+  width: 20rem;
+  height: 20rem;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-post-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-post-txt {
+  padding-left: 0.7rem;
+}
+
+.profile-post-comment,
+.profile-post-like {
+  font-size: 1.3rem;
+  padding-left: 0.7rem;
+  padding-right: 0.3rem;
+  padding-top: 0.3rem;
+}
+
+.profile-post-like {
+  color: red;
+}
+
+/****************************************************/
+/****************************************************/
+/*******************INDIVIDUAL POST******************/
+/****************************************************/
+/****************************************************/
+
+.individual-post-section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.individual-post-div {
+  width: 60rem;
+  height: 50rem;
+  border: 3px solid var(--border-blue);
+  border-radius: 50px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: white;
+}
+
+.individual-pic-img {
+  width: 100%;
+  height: 35rem;
+}
+
+.individual-text-div {
+  padding: 1rem;
+}
+
+.individual-like-comment {
+  display: flex;
+  align-items: center;
+}
+
+.indiviual-icons {
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.individual-likes,
+.individual-comments {
+  font-size: 1.5rem;
+  padding-right: 2rem;
+  padding-left: 0.2rem;
+}
+
+.individual-post-header {
+  font-weight: 100;
+  font-size: 2rem;
+}
+
+.individual-post-right {
+  border-left: 3px solid var(--border-blue);
+}
+
+.individual-post-account {
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-blue);
+}
+
+.individual-account-pic {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  border: 3px solid var(--border-blue);
+  overflow: hidden;
+  margin-right: 1.5rem;
+  cursor: pointer;
+}
+
+.individual-comment-pic {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 3px solid var(--border-blue);
+  overflow: hidden;
+  margin-right: 1.5rem;
+  cursor: pointer;
+}
+
+.individual-comment {
+  display: flex;
+  padding-block: 1rem;
+  padding-inline: 2rem;
+}
+
+.individual-comment-right,
+.individual-comment-left {
+  display: flex;
+  align-items: center;
+}
+
+.individual-comment-txt {
+  display: flex;
+  align-items: center;
+}
+
+.individual-comment-like {
+  color: red;
+  font-size: 3.5rem;
+  padding-left: 1rem;
+  cursor: pointer;
 }
