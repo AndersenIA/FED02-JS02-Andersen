@@ -4,40 +4,44 @@ import { renderFeed } from "./ui/feed.js";
 import { renderProfile } from "./ui/profile.js";
 import { renderPost } from "./ui/post.js";
 import { renderNav } from "./ui/nav.js";
+import { renderActionBar } from "./ui/actionBar.js";
 
-// The main page container for dynamic content
+// Main page container
 const pageContent = document.getElementById("page-content");
-
-// Render the nav **once at the top of the body**
-document.body.prepend(renderNav());
-
-console.log("main.js loaded");
-console.log("pageContent element:", pageContent);
-console.log("current hash:", window.location.hash);
 
 function router() {
   const path = window.location.hash || "#/login";
-  pageContent.innerHTML = ""; // clear previous page content
 
-  switch (path) {
-    case "#/login":
-      pageContent.appendChild(renderLogin());
-      break;
-    case "#/register":
-      pageContent.appendChild(renderRegister());
-      break;
-    case "#/feed":
-      pageContent.appendChild(renderFeed());
-      break;
-    case "#/profile":
-      pageContent.appendChild(renderProfile());
-      break;
-    case "#/post":
-      pageContent.appendChild(renderPost());
-      break;
-    default:
-      window.location.hash = "#/login";
-      break;
+  // Clear previous content
+  pageContent.innerHTML = "";
+
+  // Pages that show nav + action bar
+  const withNavAndAction = ["#/feed", "#/profile", "#/post"];
+
+  if (withNavAndAction.some((p) => path.startsWith(p))) {
+    pageContent.appendChild(renderNav());
+  }
+
+  if (path.startsWith("#/login")) {
+    pageContent.appendChild(renderLogin());
+  } else if (path.startsWith("#/register")) {
+    pageContent.appendChild(renderRegister());
+  } else if (path.startsWith("#/feed")) {
+    pageContent.appendChild(renderFeed());
+  } else if (path.startsWith("#/profile")) {
+    const parts = path.split("/");
+    const email = parts[2] ? decodeURIComponent(parts[2]) : null;
+
+    console.log("main.js: navigating to profile with email:", email);
+    pageContent.appendChild(renderProfile(email));
+  } else if (path.startsWith("#/post")) {
+    pageContent.appendChild(renderPost());
+  } else {
+    window.location.hash = "#/login";
+  }
+
+  if (withNavAndAction.some((p) => path.startsWith(p))) {
+    pageContent.appendChild(renderActionBar());
   }
 }
 

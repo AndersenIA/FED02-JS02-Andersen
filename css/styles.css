@@ -270,9 +270,37 @@ h2 {
   object-fit: cover;
 }
 
+.logo-img {
+  cursor: pointer;
+}
+
 .menu-icon {
   color: var(--border-blue);
   font-size: 4rem;
+  cursor: pointer;
+}
+
+/****************************************************/
+/****************************************************/
+/**********************ACTION BAR********************/
+/****************************************************/
+/****************************************************/
+
+.actionBar {
+  position: fixed;
+  bottom: 0;
+  z-index: 1000; /* make sure it's above feed */
+  background: linear-gradient(rgba(224, 82, 82, 0), rgba(44, 135, 255, 0.5));
+  padding: 0.8rem; /* space around the icon */
+  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); */
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+}
+
+.plus-icon {
+  color: rgb(224, 82, 82);
+  font-size: 3rem;
   cursor: pointer;
 }
 
@@ -412,6 +440,7 @@ h2 {
   overflow: hidden;
   border-radius: 20px;
   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .profile-post-info {
@@ -435,6 +464,59 @@ h2 {
   color: red;
 }
 
+/* ******************* */
+
+/* Blur background */
+.blurred > *:not(.modal-overlay) {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal box */
+.edit-profile-modal {
+  background: white;
+  border: 3px solid var(--border-blue);
+  border-radius: 10px;
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-profile-modal input[type="text"],
+.edit-profile-modal input[type="file"] {
+  width: 100%;
+  padding: 5px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
 /****************************************************/
 /****************************************************/
 /*******************INDIVIDUAL POST******************/
@@ -442,12 +524,12 @@ h2 {
 /****************************************************/
 
 .individual-post-section {
-  width: 100vw;
-  height: 100vh;
+  width: 60rem; /* actual modal width */
+  height: 50rem; /* actual modal height */
+
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(5px);
 }
 
 .individual-post-div {
@@ -547,4 +629,18 @@ h2 {
   font-size: 3.5rem;
   padding-left: 1rem;
   cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
 }

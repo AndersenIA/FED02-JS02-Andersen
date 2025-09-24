@@ -40,7 +40,10 @@ export function renderLogin() {
     try {
       const response = await fetch("https://v2.api.noroff.dev/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Noroff-API-Key": "f7f1efc0-1322-45ed-9e62-152f528a798a", // 🔑 add this
+        },
         body: JSON.stringify({ email, password }),
       });
 
@@ -50,6 +53,9 @@ export function renderLogin() {
 
       const data = await response.json();
       localStorage.setItem("token", data.data.accessToken); // save new token
+
+      // ✅ Store logged-in user object too
+      localStorage.setItem("user", JSON.stringify(data.data));
 
       window.location.hash = "#/feed"; // redirect to feed
     } catch (error) {
