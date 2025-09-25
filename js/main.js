@@ -5,6 +5,7 @@ import { renderProfile } from "./ui/profile.js";
 import { renderPost } from "./ui/post.js";
 import { renderNav } from "./ui/nav.js";
 import { renderActionBar } from "./ui/actionBar.js";
+import { renderSearch } from "./ui/search.js"; // <-- new import
 
 // Main page container
 const pageContent = document.getElementById("page-content");
@@ -16,7 +17,7 @@ function router() {
   pageContent.innerHTML = "";
 
   // Pages that show nav + action bar
-  const withNavAndAction = ["#/feed", "#/profile", "#/post"];
+  const withNavAndAction = ["#/feed", "#/profile", "#/post", "#/search"];
 
   if (withNavAndAction.some((p) => path.startsWith(p))) {
     pageContent.appendChild(renderNav());
@@ -36,6 +37,10 @@ function router() {
     pageContent.appendChild(renderProfile(email));
   } else if (path.startsWith("#/post")) {
     pageContent.appendChild(renderPost());
+  } else if (path.startsWith("#/search")) {
+    const parts = path.split("/");
+    const query = parts[2] ? decodeURIComponent(parts[2]) : "";
+    pageContent.appendChild(renderSearch(query));
   } else {
     window.location.hash = "#/login";
   }

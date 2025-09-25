@@ -259,7 +259,6 @@ h2 {
 .profile-pic-div,
 .stories-pic-div {
   width: 4.5rem;
-  height: 4.5rem;
   border-radius: 50%;
   border: 2px solid var(--border-blue);
   overflow: hidden;
@@ -278,6 +277,37 @@ h2 {
   color: var(--border-blue);
   font-size: 4rem;
   cursor: pointer;
+}
+
+.logoutBtn {
+  font-size: 1rem;
+  width: 7rem;
+  text-align: center;
+  margin-left: 1rem;
+  border-radius: 10px;
+  background-color: transparent; /* transparent inside */
+  color: var(--text-color);
+  cursor: pointer;
+  z-index: 1;
+  border: 2px solid var(--border-red);
+}
+
+.logoutBtn:hover {
+  background: var(--border-red);
+  color: white;
+}
+
+.searchField {
+  background-color: transparent;
+  border: 2px solid var(--border-blue);
+  border-radius: 10px;
+  padding-inline: 1rem;
+  outline: none;
+}
+
+.searchField:focus {
+  border-color: var(--border-red) !important; /* new border color when active */
+  box-shadow: 0 0 5px var(--border-red); /* optional glow */
 }
 
 /****************************************************/
@@ -546,6 +576,7 @@ h2 {
 .individual-pic-img {
   width: 100%;
   height: 35rem;
+  object-fit: cover;
 }
 
 .individual-text-div {
@@ -565,8 +596,17 @@ h2 {
 .individual-likes,
 .individual-comments {
   font-size: 1.5rem;
-  padding-right: 2rem;
   padding-left: 0.2rem;
+}
+
+.individual-likes {
+  color: red;
+  cursor: pointer;
+}
+
+.individual-likes-count {
+  padding-right: 1rem;
+  font-size: 1.5rem;
 }
 
 .individual-post-header {
@@ -643,4 +683,106 @@ h2 {
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(5px);
+}
+
+.individual-post-right {
+  height: 100%;
+}
+
+.comment-form {
+  position: relative;
+  top: 30rem;
+  text-align: center;
+}
+
+.comment-submit-btn {
+  background: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--border-blue);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.comment-submit-btn:hover {
+  background-color: var(--border-blue);
+}
+
+/****************************************************/
+/****************************************************/
+/***********************SEARCH***********************/
+/****************************************************/
+/****************************************************/
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 10rem;
+  padding-inline: 4.5rem;
+  cursor: pointer;
+}
+
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.search-profile-card {
+  display: flex;
+  width: 20rem;
+  height: 10rem;
+  overflow: hidden;
+  border: 1px solid red;
+  margin: 1rem;
+  background-color: #ececec;
+  border: 3px solid var(--border-blue);
+  border-radius: 15px;
+  padding: 1rem;
+}
+
+.search-profile-avatar {
+  width: 5rem;
+  height: 5rem;
+  overflow: hidden;
+  border: 3px solid var(--border-red);
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 2rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
 }

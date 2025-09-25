@@ -2,7 +2,6 @@ export function renderNav() {
   const nav = document.createElement("nav");
   nav.classList.add("nav-bar");
 
-  // ✅ Always load the logged-in user
   const me = JSON.parse(localStorage.getItem("user"));
 
   nav.innerHTML = `
@@ -14,28 +13,43 @@ export function renderNav() {
     <div class="logo-div">
       <img class="logo-img" src="assets/images/logoImage.png" alt="Vibe logo"/>
     </div>
-    <ion-icon class="menu-icon" name="menu-outline"></ion-icon>
+    <input type="text" class="searchField" placeholder="Search users..." />
+    <button class="logoutBtn">Log Out</button>
   `;
 
+  // Profile pic → profile page
   const profilePic = nav.querySelector(".profile-pic-div img");
   profilePic.addEventListener("click", () => {
-    console.log("Nav profile pic clicked");
-    const me = JSON.parse(localStorage.getItem("user")); // your own full object
-    console.log("Logged-in user object:", me);
-
-    if (me) {
-      localStorage.setItem("selectedProfile", JSON.stringify(me)); // update selectedProfile
-      console.log("Updated selectedProfile in localStorage");
-
-      // Include your email in the hash
-      window.location.hash = `#/profile/${encodeURIComponent(me.email)}`;
+    const me = JSON.parse(localStorage.getItem("user"));
+    if (me?.name) {
+      localStorage.setItem("selectedProfile", JSON.stringify(me));
+      window.location.hash = `#/profile/${encodeURIComponent(me.name)}`;
     }
   });
 
   // Logo → feed
   const logoImg = nav.querySelector(".logo-div img");
-  logoImg.addEventListener("click", () => {
-    window.location.hash = "#/feed";
+  logoImg.addEventListener("click", () => (window.location.hash = "#/feed"));
+
+  // Log Out
+  const logoutBtn = nav.querySelector(".logoutBtn");
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("selectedProfile");
+    window.location.hash = "#/login";
+  });
+
+  // Search field → navigate on Enter
+  const searchField = nav.querySelector(".searchField");
+  searchField.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const query = searchField.value.trim();
+      if (query) {
+        window.location.hash = `#/search/${encodeURIComponent(query)}`;
+      }
+    }
   });
 
   return nav;

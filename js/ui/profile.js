@@ -1,8 +1,10 @@
 import { renderEditProfileModal } from "./editProfileModal.js";
+import { renderIndividualPost } from "./individualPost.js";
 
 const apiKey = "f7f1efc0-1322-45ed-9e62-152f528a798a";
 
-export function renderProfile(viewUserEmail = null) {
+export function renderProfile(viewUserName = null) {
+  // changed parameter name
   const container = document.createElement("section");
   container.classList.add("profile-section");
 
@@ -13,9 +15,6 @@ export function renderProfile(viewUserEmail = null) {
   }
 
   async function loadProfile() {
-    console.log("profile.js: loadProfile called");
-
-    // Clear container
     container.innerHTML = `
       <div class="profile-info">
         <div class="profile-info-pic">
@@ -39,38 +38,37 @@ export function renderProfile(viewUserEmail = null) {
     const postsDiv = container.querySelector(".profile-posts");
 
     try {
-      let profileData;
       const me = JSON.parse(localStorage.getItem("user"));
+      let profileData;
 
-      // 1️⃣ If a viewUserEmail is provided via hash (someone else's profile)
-      if (viewUserEmail) {
-        // If it's your own email, just use your user object
-        if (viewUserEmail === me.email) {
+      if (viewUserName) {
+        if (viewUserName === me.name) {
           profileData = me;
         } else {
-          // Otherwise fetch the other user's profile
-          const res = await fetch("https://v2.api.noroff.dev/social/profiles", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "X-Noroff-API-Key": apiKey,
-            },
-          });
-          const result = await res.json();
-          profileData = result.data.find(
-            (p) => p.email.toLowerCase() === viewUserEmail.toLowerCase()
+          // Fetch profile by name
+          const res = await fetch(
+            `https://v2.api.noroff.dev/social/profiles/${encodeURIComponent(
+              viewUserName
+            )}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Noroff-API-Key": apiKey,
+              },
+            }
           );
+          const result = await res.json();
+          profileData = result.data;
           if (!profileData) throw new Error("User not found");
         }
-        localStorage.setItem("selectedProfile", JSON.stringify(profileData));
       } else {
-        // 2️⃣ If no email is provided in hash, just load the stored selectedProfile
         const storedProfile = localStorage.getItem("selectedProfile");
         if (!storedProfile) throw new Error("No profile selected");
         profileData = JSON.parse(storedProfile);
       }
-      console.log("profile.js: loaded profileData:", profileData);
 
-      // Fill profile info
+      localStorage.setItem("selectedProfile", JSON.stringify(profileData));
+
       profileImg.src =
         profileData.avatar?.url || "assets/images/default-profile.jpg";
       profileImg.onerror = () =>
@@ -79,57 +77,112 @@ export function renderProfile(viewUserEmail = null) {
       profileName.textContent = profileData.name || "No name set";
       profileBio.textContent = profileData.bio || "No bio set";
 
-      // Show edit button only for your own profile
-      const meEmail = JSON.parse(localStorage.getItem("user"))?.email;
-      editBtn.style.display = profileData.email === meEmail ? "block" : "none";
-      editBtn.onclick = () => renderEditProfileModal();
+      editBtn.style.display = profileData.email === me.email ? "block" : "none";
 
-      // Fetch posts for this profile
-      const postsRes = await fetch(
-        `https://v2.api.noroff.dev/social/profiles/${profileData.name}/posts`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "X-Noroff-API-Key": apiKey,
-          },
-        }
-      );
+      // Edit profile
+      editBtn.onclick = () =>
+        renderEditProfileModal(profileData, async (updatedData) => {
+          profileImg.src =
+            updatedData.avatar?.url || "assets/images/default-profile.jpg";
+          profileBio.textContent = updatedData.bio || "";
 
-      let userPosts = [];
-      if (postsRes.ok) {
-        const { data: posts } = await postsRes.json();
-        userPosts = posts;
-      } else {
-        console.warn("profile.js: failed to fetch posts", postsRes.status);
-      }
+          try {
+            const res = await fetch(
+              `https://v2.api.noroff.dev/social/profiles/${profileData.name}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                  "X-Noroff-API-Key": apiKey,
+                },
+                body: JSON.stringify({
+                  bio: updatedData.bio,
+                  avatar: updatedData.avatar,
+                }),
+              }
+            );
 
-      postsDiv.innerHTML = "";
-      if (!userPosts.length) {
-        postsDiv.innerHTML = "<p>No posts yet.</p>";
-      } else {
-        userPosts.forEach((post) => {
-          const postEl = document.createElement("div");
-          postEl.classList.add("profile-post");
-          postEl.innerHTML = `
-            <div class="profile-post-pic">
-              <img src="${post.media?.url || "assets/images/default-post.jpg"}"
-                   alt="${post.media?.alt || ""}" class="profile-post-img"/>
-            </div>
-            <div class="profile-post-info">
-              <ion-icon class="profile-post-like" name="heart-outline"></ion-icon>
-              <p class="like-amount">${post._count?.reactions || 0}</p>
-              <ion-icon class="profile-post-comment" name="chatbox-ellipses-outline"></ion-icon>
-              <p class="comment-amount">${post._count?.comments || 0}</p>
-            </div>
-            <div class="profile-post-txt">
-              <h3 class="profile-post-username">${
-                profileData.name || "Unknown"
-              }</h3>
-              <p class="profile-post-p">${post.body || ""}</p>
-            </div>
-          `;
-          postsDiv.appendChild(postEl);
+            if (!res.ok) throw new Error("Failed to update profile on server");
+
+            const savedData = await res.json();
+
+            profileData = { ...profileData, ...savedData.data };
+            localStorage.setItem("user", JSON.stringify(profileData));
+            localStorage.setItem(
+              "selectedProfile",
+              JSON.stringify(profileData)
+            );
+
+            loadPosts(profileData.name);
+          } catch (err) {
+            console.error(err);
+            alert(
+              "Failed to update profile on the server. Please try again later."
+            );
+          }
         });
+
+      loadPosts(profileData.name);
+
+      async function loadPosts(username) {
+        try {
+          const postsRes = await fetch(
+            `https://v2.api.noroff.dev/social/profiles/${encodeURIComponent(
+              username
+            )}/posts`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Noroff-API-Key": apiKey,
+              },
+            }
+          );
+
+          let userPosts = [];
+          if (postsRes.ok) {
+            const { data: posts } = await postsRes.json();
+            userPosts = posts;
+          }
+
+          postsDiv.innerHTML = "";
+          if (!userPosts.length) {
+            postsDiv.innerHTML = "<p>No posts yet.</p>";
+          } else {
+            userPosts.forEach((post) => {
+              const postEl = document.createElement("div");
+              postEl.classList.add("profile-post");
+              postEl.innerHTML = `
+                <div class="profile-post-pic">
+                  <img src="${
+                    post.media?.url || "assets/images/default-post.jpg"
+                  }" 
+                       alt="${post.media?.alt || ""}" class="profile-post-img"/>
+                </div>
+                <div class="profile-post-info">
+                  <ion-icon class="profile-post-like" name="heart-outline"></ion-icon>
+                  <p class="like-amount">${post._count?.reactions || 0}</p>
+                  <ion-icon class="profile-post-comment" name="chatbox-ellipses-outline"></ion-icon>
+                  <p class="comment-amount">${post._count?.comments || 0}</p>
+                </div>
+                <div class="profile-post-txt">
+                  <h3 class="profile-post-username">${
+                    profileData.name || "Unknown"
+                  }</h3>
+                  <p class="profile-post-p">${post.body || ""}</p>
+                </div>
+              `;
+              postEl.addEventListener("click", () =>
+                renderIndividualPost(post)
+              );
+              postsDiv.appendChild(postEl);
+            });
+          }
+        } catch (err) {
+          console.error("Failed to load posts:", err);
+          postsDiv.innerHTML =
+            "<p style='color:red;'>Failed to load posts.</p>";
+        }
       }
     } catch (err) {
       console.error(err);
@@ -139,15 +192,11 @@ export function renderProfile(viewUserEmail = null) {
 
   loadProfile();
 
-  // Reload profile if hash changes while staying on a profile page
   window.addEventListener("hashchange", () => {
     if (window.location.hash.startsWith("#/profile")) {
-      // Extract email from hash
       const parts = window.location.hash.split("/");
-      const email = parts[2] ? decodeURIComponent(parts[2]) : null;
-      if (email) {
-        viewUserEmail = email;
-      }
+      const name = parts[2] ? decodeURIComponent(parts[2]) : null;
+      if (name) viewUserName = name;
       loadProfile();
     }
   });

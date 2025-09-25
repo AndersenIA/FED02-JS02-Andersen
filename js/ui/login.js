@@ -23,47 +23,48 @@ export function renderLogin() {
     </div>
   `;
 
-  // Grab the form and error message elements
   const form = container.querySelector(".login-form");
   const errorMsg = container.querySelector(".error-msg");
 
   form.addEventListener("submit", async (e) => {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault();
 
-    // Clear old tokens
+    // Clear old tokens & user data
     localStorage.removeItem("token");
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("selectedProfile");
 
     const email = form.querySelector("#email").value;
     const password = form.querySelector("#password").value;
 
     try {
+      // Login request
       const response = await fetch("https://v2.api.noroff.dev/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Noroff-API-Key": "f7f1efc0-1322-45ed-9e62-152f528a798a", // 🔑 add this
+          "X-Noroff-API-Key": "f7f1efc0-1322-45ed-9e62-152f528a798a",
         },
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        throw new Error("Invalid email or password");
-      }
+      if (!response.ok) throw new Error("Invalid email or password");
 
       const data = await response.json();
-      localStorage.setItem("token", data.data.accessToken); // save new token
+      const user = data.data; // ✅ this already has name, email, avatar, accessToken
 
-      // ✅ Store logged-in user object too
-      localStorage.setItem("user", JSON.stringify(data.data));
+      // Save token and full user object
+      localStorage.setItem("token", user.accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("selectedProfile", JSON.stringify(user));
 
-      window.location.hash = "#/feed"; // redirect to feed
+      // Redirect to feed
+      window.location.hash = "#/feed";
     } catch (error) {
       console.error(error);
       errorMsg.textContent = error.message;
     }
   });
 
-  // ✅ Return the container so router can append it
   return container;
 }
