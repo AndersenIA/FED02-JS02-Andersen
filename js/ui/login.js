@@ -70,7 +70,7 @@ export function renderLogin() {
       if (!response.ok) throw new Error("Invalid email or password");
 
       const data = await response.json();
-      const user = data.data; // ✅ this already has name, email, avatar, accessToken
+      const user = data.data;
 
       // Save token and full user object
       localStorage.setItem("token", user.accessToken);

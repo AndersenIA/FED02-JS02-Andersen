@@ -5,7 +5,7 @@ import { renderProfile } from "./ui/profile.js";
 import { renderPost } from "./ui/post.js";
 import { renderNav } from "./ui/nav.js";
 import { renderActionBar } from "./ui/actionBar.js";
-import { renderSearch } from "./ui/search.js"; // <-- new import
+import { renderSearch } from "./ui/search.js";
 
 // Main page container
 const pageContent = document.getElementById("page-content");
@@ -33,7 +33,6 @@ function router() {
     const parts = path.split("/");
     const username = parts[2] ? decodeURIComponent(parts[2]) : null;
 
-    console.log("main.js: navigating to profile with username:", username);
     pageContent.appendChild(renderProfile(username));
   } else if (path.startsWith("#/post")) {
     pageContent.appendChild(renderPost());

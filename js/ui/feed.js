@@ -34,8 +34,6 @@ export function renderFeed() {
       const data = await response.json();
       const posts = data.data;
 
-      console.log("Fetched posts:", posts); // <-- log posts here
-
       if (!posts || posts.length === 0) {
         feedDiv.innerHTML = "<p>No posts to show.</p>";
         return;
