@@ -31,10 +31,10 @@ function router() {
     pageContent.appendChild(renderFeed());
   } else if (path.startsWith("#/profile")) {
     const parts = path.split("/");
-    const email = parts[2] ? decodeURIComponent(parts[2]) : null;
+    const username = parts[2] ? decodeURIComponent(parts[2]) : null;
 
-    console.log("main.js: navigating to profile with email:", email);
-    pageContent.appendChild(renderProfile(email));
+    console.log("main.js: navigating to profile with username:", username);
+    pageContent.appendChild(renderProfile(username));
   } else if (path.startsWith("#/post")) {
     pageContent.appendChild(renderPost());
   } else if (path.startsWith("#/search")) {

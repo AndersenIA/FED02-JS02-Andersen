@@ -368,11 +368,10 @@ export function renderIndividualPost(postOrId) {
       if (profileImg && fullPost.author) {
         profileImg.style.cursor = "pointer";
         profileImg.addEventListener("click", () => {
-          localStorage.setItem(
-            "selectedProfile",
-            JSON.stringify(fullPost.author)
-          );
-          window.location.hash = "#/profile";
+          const username = fullPost.author?.name;
+          if (!username) return;
+
+          window.location.hash = `#/profile/${encodeURIComponent(username)}`;
           closeModal();
         });
       }

@@ -1,3 +1,22 @@
+/**
+ * Renders the login page UI and handles user authentication.
+ *
+ * Creates a login form with fields for email and password.
+ * On form submission:
+ *   - Clears any existing localStorage tokens or user data.
+ *   - Sends a POST request to the Noroff API to authenticate the user.
+ *   - If successful, stores the access token and user data in localStorage.
+ *   - Sets the logged-in user's profile as the selected profile.
+ *   - Navigates to the feed page.
+ *   - Displays error messages for invalid credentials or network errors.
+ *
+ * @returns {HTMLElement} A div element containing the login form and layout.
+ *
+ * @example
+ * const loginPage = renderLogin();
+ * document.body.appendChild(loginPage);
+ */
+
 export function renderLogin() {
   const container = document.createElement("div");
 

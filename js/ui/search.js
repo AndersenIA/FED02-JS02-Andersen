@@ -2,6 +2,23 @@ import { renderProfile } from "./profile.js";
 
 const apiKey = "f7f1efc0-1322-45ed-9e62-152f528a798a";
 
+/**
+ * Renders the search results section for user profiles.
+ *
+ * Fetches profiles from the API that match the given query and displays them
+ * in a list. Each profile card shows the user's avatar, name (or email if name is missing),
+ * and bio. Clicking a profile card navigates to that user's profile page.
+ *
+ * If no user is logged in, it redirects to the login page.
+ *
+ * @param {string} query - The search query string used to find matching profiles.
+ * @returns {HTMLElement} A section element containing the search results.
+ *
+ * @example
+ * const searchSection = renderSearch("John");
+ * document.body.appendChild(searchSection);
+ */
+
 export function renderSearch(query) {
   const container = document.createElement("section");
   container.classList.add("search-section");

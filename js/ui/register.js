@@ -1,6 +1,25 @@
 // ui/register.js
 const apiKey = "f7f1efc0-1322-45ed-9e62-152f528a798a";
 
+/**
+ * Renders the registration page UI and handles user registration.
+ *
+ * Creates a registration form with fields for email, username, and password.
+ * Performs client-side validation:
+ *   - Email must end with "@stud.noroff.no".
+ *   - Password must be at least 8 characters.
+ *
+ * On form submission, sends a POST request to the Noroff API to register
+ * the user. If successful, stores the user data in localStorage and
+ * navigates to the login page. Errors are displayed via alert and console.
+ *
+ * @returns {HTMLElement} A div element containing the registration form and layout.
+ *
+ * @example
+ * const registerPage = renderRegister();
+ * document.body.appendChild(registerPage);
+ */
+
 export function renderRegister() {
   const container = document.createElement("div");
 

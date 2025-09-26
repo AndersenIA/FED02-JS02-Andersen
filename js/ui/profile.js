@@ -4,7 +4,6 @@ import { renderIndividualPost } from "./individualPost.js";
 const apiKey = "f7f1efc0-1322-45ed-9e62-152f528a798a";
 
 export function renderProfile(viewUserName = null) {
-  // changed parameter name
   const container = document.createElement("section");
   container.classList.add("profile-section");
 
@@ -15,7 +14,7 @@ export function renderProfile(viewUserName = null) {
   }
 
   async function loadProfile() {
-    container.innerHTML = `
+    const profileInfoHTML = `
       <div class="profile-info">
         <div class="profile-info-pic">
           <img class="profile-info-img" src="assets/images/default-profile.jpg" alt="Profile Picture"/>
@@ -24,51 +23,56 @@ export function renderProfile(viewUserName = null) {
           <h2 class="account-username">Loading...</h2>
           <h3 class="account-name"></h3>
           <p class="account-bio"></p>
+          <p class="followers">Followers: <span class="followers-count">0</span></p>
+          <p class="following">Following: <span class="following-count">0</span></p>
         </div>
         <button class="edit-profile-btn">Edit profile</button>
+        <button class="follow-btn" style="display:none;">Follow</button>
       </div>
       <div class="profile-posts"></div>
     `;
+    container.innerHTML = profileInfoHTML;
 
     const profileImg = container.querySelector(".profile-info-img");
     const profileUsername = container.querySelector(".account-username");
     const profileName = container.querySelector(".account-name");
     const profileBio = container.querySelector(".account-bio");
     const editBtn = container.querySelector(".edit-profile-btn");
+    const followBtn = container.querySelector(".follow-btn");
+    const followersCount = container.querySelector(".followers-count");
+    const followingCount = container.querySelector(".following-count");
     const postsDiv = container.querySelector(".profile-posts");
 
     try {
       const me = JSON.parse(localStorage.getItem("user"));
-      let profileData;
 
-      if (viewUserName) {
-        if (viewUserName === me.name) {
-          profileData = me;
-        } else {
-          // Fetch profile by name
-          const res = await fetch(
-            `https://v2.api.noroff.dev/social/profiles/${encodeURIComponent(
-              viewUserName
-            )}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "X-Noroff-API-Key": apiKey,
-              },
-            }
-          );
-          const result = await res.json();
-          profileData = result.data;
-          if (!profileData) throw new Error("User not found");
-        }
-      } else {
-        const storedProfile = localStorage.getItem("selectedProfile");
-        if (!storedProfile) throw new Error("No profile selected");
-        profileData = JSON.parse(storedProfile);
+      // Determine which username to fetch
+      let usernameToFetch = viewUserName;
+      const hashParts = window.location.hash.split("/");
+      if (hashParts[1] === "profile" && hashParts[2]) {
+        usernameToFetch = decodeURIComponent(hashParts[2]);
       }
+      if (!usernameToFetch) usernameToFetch = me?.name;
+
+      const res = await fetch(
+        `https://v2.api.noroff.dev/social/profiles/${encodeURIComponent(
+          usernameToFetch
+        )}?_followers=true&_following=true`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-Noroff-API-Key": apiKey,
+          },
+        }
+      );
+      const result = await res.json();
+      const profileData = result.data;
+
+      if (!profileData) throw new Error("User not found");
 
       localStorage.setItem("selectedProfile", JSON.stringify(profileData));
 
+      // Populate profile info
       profileImg.src =
         profileData.avatar?.url || "assets/images/default-profile.jpg";
       profileImg.onerror = () =>
@@ -76,10 +80,46 @@ export function renderProfile(viewUserName = null) {
       profileUsername.textContent = profileData.email || "No email set";
       profileName.textContent = profileData.name || "No name set";
       profileBio.textContent = profileData.bio || "No bio set";
+      followersCount.textContent = profileData._count?.followers || 0;
+      followingCount.textContent = profileData._count?.following || 0;
 
-      editBtn.style.display = profileData.email === me.email ? "block" : "none";
+      // Show edit button only for own profile
+      editBtn.style.display = profileData.name === me.name ? "block" : "none";
 
-      // Edit profile
+      // Follow/unfollow button for other users
+      if (profileData.name !== me.name) {
+        followBtn.style.display = "block";
+        let amIFollowing = profileData.followers?.some(
+          (f) => f.name === me.name
+        );
+        followBtn.textContent = amIFollowing ? "Unfollow" : "Follow";
+
+        followBtn.onclick = async () => {
+          try {
+            const action = amIFollowing ? "unfollow" : "follow";
+            const res = await fetch(
+              `https://v2.api.noroff.dev/social/profiles/${encodeURIComponent(
+                profileData.name
+              )}/${action}`,
+              {
+                method: "PUT",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "X-Noroff-API-Key": apiKey,
+                },
+              }
+            );
+            if (!res.ok) throw new Error(`Failed to ${action}`);
+            // Refresh profile after action
+            loadProfile();
+          } catch (err) {
+            console.error(err);
+            alert("Something went wrong with follow/unfollow");
+          }
+        };
+      }
+
+      // Edit profile modal
       editBtn.onclick = () =>
         renderEditProfileModal(profileData, async (updatedData) => {
           profileImg.src =
@@ -102,27 +142,17 @@ export function renderProfile(viewUserName = null) {
                 }),
               }
             );
-
             if (!res.ok) throw new Error("Failed to update profile on server");
-
             const savedData = await res.json();
-
-            profileData = { ...profileData, ...savedData.data };
-            localStorage.setItem("user", JSON.stringify(profileData));
-            localStorage.setItem(
-              "selectedProfile",
-              JSON.stringify(profileData)
-            );
-
+            localStorage.setItem("user", JSON.stringify(savedData.data));
             loadPosts(profileData.name);
           } catch (err) {
             console.error(err);
-            alert(
-              "Failed to update profile on the server. Please try again later."
-            );
+            alert("Failed to update profile. Please try again later.");
           }
         });
 
+      // Load posts
       loadPosts(profileData.name);
 
       async function loadPosts(username) {
@@ -138,18 +168,12 @@ export function renderProfile(viewUserName = null) {
               },
             }
           );
-
-          let userPosts = [];
-          if (postsRes.ok) {
-            const { data: posts } = await postsRes.json();
-            userPosts = posts;
-          }
-
+          const { data: posts } = await postsRes.json();
           postsDiv.innerHTML = "";
-          if (!userPosts.length) {
+          if (!posts?.length) {
             postsDiv.innerHTML = "<p>No posts yet.</p>";
           } else {
-            userPosts.forEach((post) => {
+            posts.forEach((post) => {
               const postEl = document.createElement("div");
               postEl.classList.add("profile-post");
               postEl.innerHTML = `
@@ -195,8 +219,7 @@ export function renderProfile(viewUserName = null) {
   window.addEventListener("hashchange", () => {
     if (window.location.hash.startsWith("#/profile")) {
       const parts = window.location.hash.split("/");
-      const name = parts[2] ? decodeURIComponent(parts[2]) : null;
-      if (name) viewUserName = name;
+      viewUserName = parts[2] ? decodeURIComponent(parts[2]) : null;
       loadProfile();
     }
   });
