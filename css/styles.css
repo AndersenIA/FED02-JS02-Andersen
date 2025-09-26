@@ -95,12 +95,11 @@ body {
   margin: 0;
   min-height: 100vh;
 
-  /* Background image */
   background-image: url(../assets/images/background_image.png);
   background-repeat: no-repeat;
-  background-position: center center; /* keeps it centered horizontally + vertically */
-  background-attachment: fixed; /* makes it stay fixed while scrolling */
-  background-size: cover; /* makes sure it covers the entire screen */
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 h2 {
@@ -144,10 +143,10 @@ h2 {
   padding-inline: 4rem;
   display: flex;
   flex-direction: column;
-  border-radius: 15px; /* same rounded corners */
-  background-color: transparent; /* or transparent if you prefer */
+  border-radius: 15px;
+  background-color: transparent;
   z-index: 1;
-  border: none; /* remove the solid border */
+  border: none;
 }
 
 .login-form::before {
@@ -158,13 +157,13 @@ h2 {
   right: 0;
   bottom: 0;
   border-radius: 15px;
-  padding: 3px; /* border thickness */
+  padding: 3px;
   background: linear-gradient(var(--border-blue), var(--border-red));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   pointer-events: none;
-  z-index: -1; /* keep it behind the form content */
+  z-index: -1;
 }
 
 .input-label {
@@ -193,11 +192,11 @@ h2 {
   margin-right: auto;
   padding: 0.5rem 1rem;
   border-radius: 15px;
-  background-color: transparent; /* transparent inside */
+  background-color: transparent;
   color: var(--text-color);
   cursor: pointer;
   z-index: 1;
-  border: none; /* remove default border */
+  border: none;
 }
 
 .login-btn::before {
@@ -207,21 +206,18 @@ h2 {
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 15px; /* same as button */
-  padding: 3px; /* thickness of border */
-  background: linear-gradient(
-    var(--border-blue),
-    var(--border-red)
-  ); /* gradient border */
+  border-radius: 15px;
+  padding: 3px;
+  background: linear-gradient(var(--border-blue), var(--border-red));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
-  mask-composite: exclude; /* exclude inner area, so inside is transparent */
+  mask-composite: exclude;
   pointer-events: none;
   transition: background 0.3s ease;
 }
 
 .login-btn:hover::before {
-  background: none; /* hides the border */
+  background: none;
 }
 
 .login-btn:hover {
@@ -285,7 +281,7 @@ h2 {
   text-align: center;
   margin-left: 1rem;
   border-radius: 10px;
-  background-color: transparent; /* transparent inside */
+  background-color: transparent;
   color: var(--text-color);
   cursor: pointer;
   z-index: 1;
@@ -306,8 +302,8 @@ h2 {
 }
 
 .searchField:focus {
-  border-color: var(--border-red) !important; /* new border color when active */
-  box-shadow: 0 0 5px var(--border-red); /* optional glow */
+  border-color: var(--border-red) !important;
+  box-shadow: 0 0 5px var(--border-red);
 }
 
 /****************************************************/
@@ -319,10 +315,9 @@ h2 {
 .actionBar {
   position: fixed;
   bottom: 0;
-  z-index: 1000; /* make sure it's above feed */
+  z-index: 1000;
   background: linear-gradient(rgba(224, 82, 82, 0), rgba(44, 135, 255, 0.5));
-  padding: 0.8rem; /* space around the icon */
-  /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); */
+  padding: 0.8rem;
   display: flex;
   justify-content: center;
   width: 100vw;
@@ -502,7 +497,6 @@ h2 {
   pointer-events: none;
 }
 
-/* Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -516,7 +510,6 @@ h2 {
   z-index: 9999;
 }
 
-/* Modal box */
 .edit-profile-modal {
   background: white;
   border: 3px solid var(--border-blue);

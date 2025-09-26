@@ -21,7 +21,6 @@ Vibe is a social media web application built with vanilla JavaScript. Users can 
 
 /assets
 ├─/design
-├─/icons
 └─/images
 /css
 └─styles.css
@@ -38,9 +37,6 @@ Vibe is a social media web application built with vanilla JavaScript. Users can 
 └─ /main.js
 /index.html
 
-yaml
-Kopier kode
-
 ---
 
 ## Requirements
@@ -55,10 +51,3 @@ Credits
 Developed by: Anders
 
 Backend API: Noroff Social API
-
-License
-This project is open-source and free to use for educational purposes.
-
-```
-
-```
